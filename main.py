@@ -5,7 +5,8 @@ from kivy.uix.widget import Widget
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.popup import Popup
-from plyer import notification
+#from plyer import notification
+from kivy.core.audio import SoundLoader
 from bs4 import BeautifulSoup as bs
 import requests
 
@@ -50,22 +51,24 @@ class MainWindow(Screen, Widget) :
         current_price = float(y)
         current_price = float(y)
         if current_price >= float(self.manager.ids.main_w.ids["high_id"].text):
-            notification.notify(
-            title="Buy Order Triggered", 
-            message='Target - ' + str(buy_target) + '\nStoploss' + str(float(self.manager.ids.main_w.ids["low_id"].text)), 
-            app_icon=None, 
-            timeout=200)
+            popup1 = Popup(title ='High Triggered',
+                   
+                size_hint =(None, None), size =(120, 120))   
+            popup1.open() 
+            self.sound = SoundLoader.load("myalert.wav")
+            self.sound.play()
         if current_price <= float(self.manager.ids.main_w.ids["low_id"].text):
-            notification.notify(
-            title="Low Order Triggered", 
-            message='Target - ' + str(sell_target) + '\nStoploss -  ' + str(float(self.manager.ids.main_w.ids["high_id"].text)) , 
-            app_icon=None, 
-            timeout=200)
+            popup2 = Popup(title ='Low Triggered',
+                   
+                size_hint =(None, None), size =(120, 120))   
+            popup2.open() 
+            self.sound = SoundLoader.load("myalert.wav")
+            self.sound.play()
         # schedule.every(10).seconds.do()
         # while True:
         #     schedule.run_pending()
         #     time.sleep(1)
-    
+     
     
 
 class LoginPage(Screen, Widget):
@@ -86,6 +89,7 @@ class SecondWindow(Screen, Widget):
     def run(self):
         
         MainWindow.notify_me(self)
+
         
 class WindowManager(ScreenManager):
     pass
